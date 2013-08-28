@@ -1,5 +1,7 @@
 package de.halfreal.spezi.views;
 
+import java.util.Arrays;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -22,8 +24,9 @@ public class ProgressButton extends Button {
 	private boolean loading;
 	private Drawable loadingDrawable;
 	private boolean mShouldStartAnimationDrawable;
-	private TextSelector textSelector;
+	private Drawable[] oldCompoundDrawables;
 
+	private TextSelector textSelector;
 	private Transformation transformation;
 
 	public ProgressButton(Context context) {
@@ -53,11 +56,17 @@ public class ProgressButton extends Button {
 
 	public void disableLoadingState() {
 		setText(textSelector.getText(isSelected()));
+		if (oldCompoundDrawables != null) {
+			setCompoundDrawablesWithIntrinsicBounds(oldCompoundDrawables[0],
+					oldCompoundDrawables[1], oldCompoundDrawables[2],
+					oldCompoundDrawables[3]);
+		}
 		loading = false;
 	}
 
 	public void enableLoadingState() {
 		setText(textSelector.getLoadingText());
+		oldCompoundDrawables = Arrays.copyOf(getCompoundDrawables(), 4);
 		loading = true;
 	}
 
@@ -70,8 +79,13 @@ public class ProgressButton extends Button {
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.ProgressButton);
 
-		loadingDrawable = a
-				.getDrawable(R.styleable.ProgressButton_loadingDrawable);
+		if (a.hasValue(R.styleable.ProgressButton_loadingDrawable)) {
+			loadingDrawable = a
+					.getDrawable(R.styleable.ProgressButton_loadingDrawable);
+		} else {
+			loadingDrawable = getResources().getDrawable(
+					R.drawable.default_spinner);
+		}
 
 		SimpleTextSelector simpleTextSelector = new SimpleTextSelector();
 
