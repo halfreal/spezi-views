@@ -67,6 +67,7 @@ public class ProgressButton extends Button {
 	public void enableLoadingState() {
 		setText(textSelector.getLoadingText());
 		oldCompoundDrawables = Arrays.copyOf(getCompoundDrawables(), 4);
+		setCompoundDrawables(null, null, null, null);
 		loading = true;
 	}
 
