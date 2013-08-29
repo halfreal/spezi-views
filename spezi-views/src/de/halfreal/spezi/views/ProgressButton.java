@@ -71,6 +71,10 @@ public class ProgressButton extends Button {
 		loading = true;
 	}
 
+	public TextSelector getTextSelector() {
+		return textSelector;
+	}
+
 	private void init(Context context) {
 		textSelector = new SimpleTextSelector();
 		loadingDrawable = null;
