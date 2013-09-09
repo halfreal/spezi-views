@@ -23,6 +23,11 @@ Define it in your layout:
         />
 ```
 
+
+<img src="https://raw.github.com/halfreal/spezi-views/master/site/Screenshot_2013-09-09-18-05-17.png"  width="500px" />
+
+<img src="https://raw.github.com/halfreal/spezi-views/master/site/Screenshot_2013-09-09-18-05-35.png"  width="500px" />
+
 and enable / disable progress animation:
 
 ```java
