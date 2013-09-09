@@ -19,13 +19,14 @@ public class ProgressButton extends Button {
 
 	private static final int MAX_LEVEL = 10000;
 	private Animation animation;
-	private boolean hasAnimation;
+	private boolean autoDisableClickable;
 
+	private boolean hasAnimation;
 	private boolean loading;
 	private Drawable loadingDrawable;
 	private boolean mShouldStartAnimationDrawable;
-	private Drawable[] oldCompoundDrawables;
 
+	private Drawable[] oldCompoundDrawables;
 	private TextSelector textSelector;
 	private Transformation transformation;
 
@@ -54,6 +55,9 @@ public class ProgressButton extends Button {
 		}
 	}
 
+	/**
+	 * Hide the animated spinner and show the selected / unselected text
+	 */
 	public void disableLoadingState() {
 		setText(textSelector.getText(isSelected()));
 		if (oldCompoundDrawables != null) {
@@ -61,13 +65,22 @@ public class ProgressButton extends Button {
 					oldCompoundDrawables[1], oldCompoundDrawables[2],
 					oldCompoundDrawables[3]);
 		}
+		if (autoDisableClickable) {
+			setClickable(true);
+		}
 		loading = false;
 	}
 
+	/**
+	 * Show the animated Spinner, and hide the previous text
+	 */
 	public void enableLoadingState() {
 		setText(textSelector.getLoadingText());
 		oldCompoundDrawables = Arrays.copyOf(getCompoundDrawables(), 4);
 		setCompoundDrawables(null, null, null, null);
+		if (autoDisableClickable) {
+			setClickable(false);
+		}
 		loading = true;
 	}
 
@@ -115,6 +128,11 @@ public class ProgressButton extends Button {
 			loading = a.getBoolean(R.styleable.ProgressButton_loading, false);
 		}
 
+		if (a.hasValue(R.styleable.ProgressButton_autoDisableClickable)) {
+			autoDisableClickable = a.getBoolean(
+					R.styleable.ProgressButton_autoDisableClickable, false);
+		}
+
 		textSelector = simpleTextSelector;
 		a.recycle();
 
@@ -141,6 +159,10 @@ public class ProgressButton extends Button {
 		}
 	}
 
+	/**
+	 * 
+	 * @return true if a loading animation is shown
+	 */
 	public boolean isLoading() {
 		return loading;
 	}
@@ -175,6 +197,15 @@ public class ProgressButton extends Button {
 		}
 	}
 
+	/**
+	 * Enables disables loading, and sets the selected / unselected state.
+	 * Enables loading when state equals null, and selects / unselects the
+	 * button based on the states value.
+	 * 
+	 * @param state
+	 *            , null - enables loading, true/ false - disables loading, sets
+	 *            selected/ unselected
+	 */
 	public void setLoadingState(Boolean state) {
 		if (state == null) {
 			enableLoadingState();
@@ -190,6 +221,12 @@ public class ProgressButton extends Button {
 		checkState();
 	}
 
+	/**
+	 * Sets the TextSelector, which holds a loading/ selected/ unselected text
+	 * for the button
+	 * 
+	 * @param textSelector
+	 */
 	public void setTextSelector(TextSelector textSelector) {
 		this.textSelector = textSelector;
 		checkState();
